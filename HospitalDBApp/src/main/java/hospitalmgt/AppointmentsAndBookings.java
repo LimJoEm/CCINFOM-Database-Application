@@ -24,73 +24,19 @@ public class AppointmentsAndBookings {
         this.roomId = 0;
         this.connection = "jdbc:mysql://localhost:3306/hospitaldb?useTimezone=true&serverTimezone=UTC&user=root&password=1234";
     }
-    
-        private boolean isDoctorAvailable(int doctorId, Timestamp startTime, Timestamp endTime) throws SQLException {
-        String query = "SELECT COUNT(*) AS count FROM appointments " +
-                       "WHERE doctor_id = ? AND " +
-                       "((start_time <= ? AND end_time >= ?) OR " +
-                       "(start_time <= ? AND end_time >= ?) OR " +
-                       "(start_time >= ? AND end_time <= ?))";
-        try (Connection conn = DriverManager.getConnection(this.connection);
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
-            pstmt.setInt(1, doctorId);
-            pstmt.setTimestamp(2, startTime);
-            pstmt.setTimestamp(3, startTime);
-            pstmt.setTimestamp(4, endTime);
-            pstmt.setTimestamp(5, endTime);
-            pstmt.setTimestamp(6, startTime);
-            pstmt.setTimestamp(7, endTime);
-            ResultSet rs = pstmt.executeQuery();
-            return rs.next() && rs.getInt("count") == 0; // Available if count is 0
-        }
-    }
 
-    // Check if the equipment is available during the specified time
-    private boolean isEquipmentAvailable(int equipmentId, Timestamp startTime, Timestamp endTime) throws SQLException {
-        String query = "SELECT COUNT(*) AS count FROM equipment_booking eb " +
-                       "JOIN bookings b ON eb.booking_id = b.booking_id " +
-                       "WHERE equipmentID = ? AND " +
-                       "((b.start_time <= ? AND b.end_time >= ?) OR " +
-                       "(b.start_time <= ? AND b.end_time >= ?) OR " +
-                       "(b.start_time >= ? AND b.end_time <= ?))";
-        try (Connection conn = DriverManager.getConnection(this.connection);
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
-            pstmt.setInt(1, equipmentId);
-            pstmt.setTimestamp(2, startTime);
-            pstmt.setTimestamp(3, startTime);
-            pstmt.setTimestamp(4, endTime);
-            pstmt.setTimestamp(5, endTime);
-            pstmt.setTimestamp(6, startTime);
-            pstmt.setTimestamp(7, endTime);
-            ResultSet rs = pstmt.executeQuery();
-            return rs.next() && rs.getInt("count") == 0; // Available if count is 0
-        }
-    }
-
-    // Add a new appointmentt
     public int addAppointment(Timestamp startTime, Timestamp endTime, int roomId, List<Integer> equipmentIds, LocalDate date) {
         try {
+            System.out.println("Doctor ID: " + doctorId + ", Start Time: " + startTime + ", End Time: " + endTime);
+
             // Establish database connection
             Connection conn = DriverManager.getConnection(this.connection);
             System.out.println("Connection to DB Successful");
-            
+
+            // Validate time range
             if (startTime.after(endTime) || startTime.equals(endTime)) {
                 System.out.println("Invalid time: Start time must be earlier than end time.");
                 return 0; // Failure
-            }
-
-            // Check doctor availability
-            if (!isDoctorAvailable(this.doctorId, startTime, endTime)) {
-                System.out.println("Doctor is not available during the specified time.");
-                return 0; // Failure
-            }
-
-            // Check equipment availability
-            for (int equipmentId : equipmentIds) {
-                if (!isEquipmentAvailable(equipmentId, startTime, endTime)) {
-                    System.out.println("Equipment ID " + equipmentId + " is not available during the specified time.");
-                    return 0; // Failure
-                }
             }
 
             // SQL queries
@@ -101,10 +47,6 @@ public class AppointmentsAndBookings {
             String getNextEquipmentBookingIdQuery = "SELECT MAX(equipmentBookingID) AS maxEquipmentBookingID FROM equipment_booking";
             String insertEquipmentBookingQuery = "INSERT INTO equipment_booking (equipmentBookingID, equipmentID, booking_id) VALUES (?, ?, ?)";
 
-            System.out.println("Start Time: " + startTime);
-            System.out.println("End Time: " + endTime);
-            System.out.println("");
-            
             // Step 1: Generate new booking ID
             PreparedStatement pstmt = conn.prepareStatement(getNewBookingIdQuery);
             ResultSet rs = pstmt.executeQuery();
@@ -134,11 +76,10 @@ public class AppointmentsAndBookings {
 
             Time startTimeOnly = new Time(startTime.getTime());
             Time endTimeOnly = new Time(endTime.getTime());
-            
+
             LocalDateTime aptDateTime = LocalDateTime.of(date, startTime.toLocalDateTime().toLocalTime()); // Combines date and start time
             Timestamp aptDate = Timestamp.valueOf(aptDateTime); // Convert to Timestamp
-            
-   
+
             // Step 4: Insert appointment
             pstmt = conn.prepareStatement(insertAppointmentQuery);
             pstmt.setInt(1, this.appointmentId);
@@ -182,7 +123,6 @@ public class AppointmentsAndBookings {
         }
     }
 
-    // Delete an appointment and related records
     public int deleteAppointment(int appointmentId) {
         try {
             // Establish database connection
@@ -235,8 +175,7 @@ public class AppointmentsAndBookings {
             return 0; // Failure
         }
     }
-    
-        // Update the status of an appointment
+
     public int updateAppointmentStatus(int appointmentId, int status) {
         try (Connection conn = DriverManager.getConnection(this.connection)) {
             String updateStatusQuery = "UPDATE appointments SET status = ? WHERE appointment_id = ?";
