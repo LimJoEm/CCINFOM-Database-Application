@@ -1,0 +1,89 @@
+/* General body styling */
+body {
+    background-image: url('images/image1.png'); /* Sets background image */
+    background-size: cover; /* Scales the image to cover the viewport */
+    background-position: center; /* Centers the background image */
+    background-repeat: no-repeat; /* Prevents the background from repeating */
+    background-attachment: fixed; /* Keeps the background fixed during scroll */
+    font-family: 'Oswald', sans-serif; /* Sets the font family */
+    color: #fff; /* Text color */
+    text-align: center; /* Centers text */
+    margin: 0;
+    padding: 0;
+}
+
+/* Container for the content */
+.container {
+    display: flex; /* Enables flexbox layout */
+    flex-direction: column; /* Stacks child elements vertically */
+    align-items: center; /* Centers items horizontally */
+    justify-content: center; /* Centers items vertically */
+    min-height: 100vh; /* Ensures the container fills the viewport */
+    background: rgba(0, 0, 0, 0.6); /* Adds a semi-transparent black overlay */
+    padding: 20px; /* Adds spacing inside the container */
+}
+
+/* Header styling */
+h1 {
+    font-size: 3em; /* Sets the font size */
+    margin-bottom: 30px; /* Adds spacing below the header */
+    color: #fff; /* Text color */
+    text-transform: uppercase; /* Converts text to uppercase */
+}
+
+/* Ensures consistent box sizing for all elements */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+/* Navigation list styling */
+.nav-links {
+    list-style-type: none; /* Removes bullet points */
+    padding: 0; /* Removes default padding */
+    margin: 0; /* Removes default margin */
+}
+
+/* Navigation list item styling */
+.nav-links li {
+    margin: 20px 0; /* Adds spacing between list items */
+}
+
+/* Navigation link styling */
+.nav-links a {
+    color: transparent; /* Makes the text transparent initially */
+    text-decoration: none; /* Removes underline */
+    font-size: 2em; /* Increases font size */
+    text-transform: uppercase; /* Converts text to uppercase */
+    padding: 10px 20px; /* Adds padding around the text */
+    border: 4px solid #fff; /* Creates a bold white border */
+    position: relative; /* Positions the pseudo-element relative to the link */
+    display: inline-block; /* Ensures the link behaves like a block-level element */
+    transition: all 0.4s ease-in-out; /* Smooth transitions for hover effects */
+    letter-spacing: 2px; /* Adds spacing between letters */
+    -webkit-text-stroke: 1px #fff; /* Creates an outlined text effect */
+}
+
+/* Before pseudo-element for hover background effect */
+.nav-links a::before {
+    content: ""; /* Empty content for pseudo-element */
+    position: absolute; /* Positions the element relative to the link */
+    top: 0;
+    left: 0;
+    width: 100%; /* Matches the width of the link */
+    height: 100%; /* Matches the height of the link */
+    background-color: #fff; /* White background */
+    z-index: -1; /* Places the pseudo-element behind the link text */
+    transform: scaleY(0); /* Collapses the element vertically */
+    transform-origin: bottom; /* Starts the expansion from the bottom */
+    transition: transform 0.4s ease-in-out; /* Smooth transition for hover effect */
+}
+
+/* Hover effect: expands the background and changes text style */
+.nav-links a:hover::before {
+    transform: scaleY(1); /* Expands the background to full height */
+}
+
+.nav-links a:hover {
+    color: #fff; /* Sets text color to white */
+    -webkit-text-stroke: 0; /* Removes the outline effect */
+}

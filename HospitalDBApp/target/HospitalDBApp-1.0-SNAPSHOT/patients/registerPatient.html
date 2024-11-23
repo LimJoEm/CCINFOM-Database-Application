@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Document metadata and external resources -->
+    <meta charset="UTF-8"> <!-- Specifies the character encoding -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Ensures responsive design -->
+    <title>Register New Patient</title> <!-- Title of the web page -->
+    
+    <!-- Link to external CSS for styling -->
+    <link rel="stylesheet" href="../styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Page heading -->
+        <h1>Register New Patient</h1>
+        
+        <!-- Form to register a new patient -->
+        <form action="registerPatient.jsp" method="post">
+            
+            <!-- Input for first name -->
+            <label for="firstName">First Name:</label>
+            <input type="text" id="firstName" name="firstName" required>
+
+            <!-- Input for last name -->
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName" name="lastName" required>
+
+            <!-- Input for date of birth -->
+            <label for="dateOfBirth">Date of Birth (YYYY-MM-DD):</label>
+            <input type="date" id="dateOfBirth" name="dateOfBirth" required>
+
+            <!-- Input for age -->
+            <label for="age">Age:</label>
+            <input type="number" id="age" name="age" required>
+
+            <!-- Dropdown for selecting gender -->
+            <label for="gender">Gender:</label>
+            <select id="gender" name="gender" required>
+                <option value="">Select Gender</option>
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+            </select>
+
+            <!-- Input for phone number -->
+            <label for="phoneNum">Phone Number:</label>
+            <input type="tel" id="phoneNum" name="phoneNum" required>
+
+            <!-- Submit button to register the patient -->
+            <input type="submit" value="Register Patient">
+        </form>
+    </div>
+</body>
+
+</html>
